@@ -1,0 +1,31 @@
+[core]
+	excludesfile = /Users/yhuggler/.gitignore_global
+	editor = nvim
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[url "https://"]
+        insteadOf = git://
+[user]
+	name = Yannick Huggler
+	email = yannick@huggler.io
+[alias]
+        prune = fetch --prune
+        undo = reset --soft HEAD^
+        stash-all = stash save --include-untracked
+        glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+        original = show $(cat .git/rebase-apply/original-commit)
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+[stash]
+        showPatch = true
+[rebase]
+        autostash = true
+[log]
+        decorate = full
+[push]
+        followTags = true
+[commit]
+	template = /Users/yh/.stCommitMsg
