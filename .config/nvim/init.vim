@@ -10,8 +10,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
 Plug 'prettier/vim-prettier', { 'do': 'npm install' }
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-commentary'
 Plug 'jiangmiao/auto-pairs'
 Plug 'christoomey/vim-system-copy'
@@ -24,6 +24,8 @@ Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 Plug 'hashivim/vim-hashicorp-tools'
 Plug 'jvirtanen/vim-hcl'
 Plug 'phanviet/vim-monokai-pro'
+Plug 'doums/darcula'
+Plug 'itchyny/lightline.vim'
 
 call plug#end()
 
@@ -75,13 +77,15 @@ nnoremap <leader>Y "+y
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Make airline to appear on all the tabs
-set laststatus=2
+"set laststatus=2
 
-let g:airline_theme='onedark'
+"let g:airline_theme='draculaOriginal'
 
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#branch#format = 1
-let g:airline#extensions#branch#displayed_head_limit = 13
+"let g:airline_powerline_fonts = 1
+"let g:airline#extensions#branch#format = 1
+"let g:airline#extensions#branch#displayed_head_limit = 13
+let g:lightline = { 'colorscheme': 'darculaOriginal' }
+
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -100,7 +104,7 @@ if (has("termguicolors"))
 endif
 
 syntax enable
-colorscheme onedark
+colorscheme darcula
 
 " Nerdtree
 let g:NERDTreeShowHidden = 1

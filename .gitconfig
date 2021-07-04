@@ -22,10 +22,15 @@
 [stash]
         showPatch = true
 [rebase]
-        autostash = true
+        autostash = false
 [log]
         decorate = full
 [push]
         followTags = true
 [commit]
 	template = /Users/yh/.stCommitMsg
+[pull]
+	rebase = false
+[init]
+	defaulBranch = main
+	defaultBranch = main
