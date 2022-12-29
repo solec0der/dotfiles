@@ -26,6 +26,15 @@ Plug 'jvirtanen/vim-hcl'
 Plug 'phanviet/vim-monokai-pro'
 Plug 'doums/darcula'
 Plug 'itchyny/lightline.vim'
+Plug 'MrcJkb/haskell-tools.nvim'
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'github/copilot.vim'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh'
+    \ }
 
 call plug#end()
 
@@ -146,7 +155,7 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit'
   \}
 
-let $FZF_DEFAULT_COMMAND = 'ag -g ""'
+set rtp+=/opt/homebrew/opt/fzf
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => End: FZF
