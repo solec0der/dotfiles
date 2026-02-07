@@ -23,6 +23,10 @@ zinit wait lucid for \
 # globalias (expand aliases on space — same as Oh-My-Zsh plugin)
 zinit snippet OMZP::globalias
 
+# OMZ lib snippets (l, la, ll, .., ..., md, rd, etc.)
+zinit snippet OMZL::directories.zsh
+zinit snippet OMZL::theme-and-appearance.zsh
+
 # ─── Completions ──────────────────────────────────────────
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
@@ -81,4 +85,4 @@ alias ppops="~/.local/bin/tmux-ppops"
 
 # ─── Custom Completions ──────────────────────────────────
 source /Users/yh/.zfunc/_ops-digest
-source <(ng completion script) 2>/dev/null
+command -v ng &>/dev/null && source <(ng completion script)

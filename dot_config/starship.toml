@@ -23,6 +23,9 @@ format = '([$all_status$ahead_behind]($style) )'
 [kubernetes]
 disabled = false
 format = '[k8s:$context/$namespace]($style) '
+detect_files = ['helmfile.yaml', 'Helmfile.yaml']
+detect_folders = ['k8s', 'kubernetes', 'helm', 'charts', 'kustomize', 'manifests']
+detect_env_vars = ['KUBECONFIG']
 
 [java]
 format = '[java:$version]($style) '
