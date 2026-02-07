@@ -1,0 +1,17 @@
+font-family = Fira Code
+font-size = 14
+font-thicken = true
+theme = catppuccin-mocha
+window-padding-x = 8
+window-padding-y = 4
+macos-titlebar-style = tabs
+copy-on-select = clipboard
+mouse-scroll-multiplier = 3
+confirm-close-surface = false
+shell-integration = zsh
+
+# Warp-like split keybindings
+keybind = super+d=new_split:right
+keybind = super+shift+d=new_split:down
+keybind = super+w=close_surface
+keybind = super+shift+enter=toggle_split_zoom

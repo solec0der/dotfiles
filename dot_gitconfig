@@ -1,0 +1,9 @@
+[user]
+	name = Yannick Huggler
+	email = yannick.huggler@polypoint.ch
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[core]
+	autocrlf = input

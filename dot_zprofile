@@ -1,0 +1,12 @@
+eval "$(/opt/homebrew/bin/brew shellenv)"
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+typeset -U path  # automatically deduplicates PATH
+path=(
+  "$HOME/.local/bin"
+  "/opt/homebrew/opt/mysql-client/bin"
+  "/opt/homebrew/opt/libpq/bin"
+  "/Applications/IntelliJ IDEA.app/Contents/MacOS"
+  "$HOME/.lmstudio/bin"
+  $path
+)

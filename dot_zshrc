@@ -1,0 +1,84 @@
+# ─── Options ──────────────────────────────────────────────
+unsetopt AUTO_CD
+setopt HIST_IGNORE_ALL_DUPS HIST_SAVE_NO_DUPS SHARE_HISTORY
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE="$HOME/.zsh_history"
+
+# ─── Zinit (replaces Oh-My-Zsh) ──────────────────────────
+ZINIT_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
+[ ! -d "$ZINIT_HOME" ] && mkdir -p "$(dirname $ZINIT_HOME)" \
+  && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
+
+# Plugins — turbo mode (loads after prompt, keeps startup fast)
+zinit wait lucid for \
+  atinit"zicompinit; zicdreplay" \
+    zdharma-continuum/fast-syntax-highlighting \
+  atload"_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions \
+  blockf atpull'zinit creinstall -q .' \
+    zsh-users/zsh-completions
+
+# globalias (expand aliases on space — same as Oh-My-Zsh plugin)
+zinit snippet OMZP::globalias
+
+# ─── Completions ──────────────────────────────────────────
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+fpath+=~/.zfunc
+
+# ─── Tool Init ────────────────────────────────────────────
+# SDKMAN (Java, Maven)
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+# mise (Node, Python — replaces NVM, pyenv, asdf)
+eval "$(mise activate zsh)"
+
+# Starship prompt
+eval "$(starship init zsh)"
+
+# ─── Environment ──────────────────────────────────────────
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+export GIT_SSH_COMMAND="/usr/bin/ssh"
+export ANSIBLE_HOST_KEY_CHECKING=False
+export DOCKER_DEFAULT_PLATFORM=linux/arm64
+
+# ─── Aliases ──────────────────────────────────────────────
+alias v="nvim"
+alias zshrc="nvim ~/.zshrc"
+alias reload="source ~/.zshrc"
+alias venv="source ./venv/bin/activate"
+
+# Git
+alias gcmsg="git commit -m"
+alias gco="git checkout"
+alias gstat="git status"
+alias gaa="git add ."
+alias glog="git log --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%an%C(reset)%C(bold yellow)%d%C(reset) %C(dim white)- %s%C(reset)' --all"
+alias gc="git commit -s -m"
+
+# Polypoint
+alias psp="cd ~/dev/polypoint/zn2c/cloud && git pull && ./pull-sub-projects-ssh.sh"
+alias ppterm="cd ~/dev/polypoint/zn2c/cloud/polypoint-cloud-cli && git pull && ./ppterm.sh"
+alias cloud="cd ~/dev/polypoint/zn2c/cloud"
+
+# Ansible
+alias ap="ansible-playbook --vault-password-file pp_private/ppvault_pw -i inventories/"
+
+# Kubernetes
+alias kk="k9s"
+alias kk-local="k9s --context docker-desktop -n polypoint"
+alias kk-ct="k9s --context gke_ppcloud-dev_europe-west3_ppcloud-dev-cluster -n ct"
+alias kk-review="k9s --context gke_ppcloud-dev_europe-west6_ppcloud-demo-cluster -n review"
+alias kk-preview="k9s --context gke_ppcloud-dev_europe-west6_ppcloud-demo-cluster -n preview"
+alias kk-staging="k9s --context gke_ppcloud-dev_europe-west6_ppcloud-demo-cluster -n staging"
+alias kk-prod="k9s --context gke_ppcloud-213507_europe-west6_ppcloud-prod-cluster -n prod"
+
+# Workspace launchers (replace Warp launch configs)
+alias ppdev="~/.local/bin/tmux-ppdev"
+alias ppops="~/.local/bin/tmux-ppops"
+
+# ─── Custom Completions ──────────────────────────────────
+source /Users/yh/.zfunc/_ops-digest
+source <(ng completion script) 2>/dev/null

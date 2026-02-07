@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+SESSION="pp-dev"
+CLOUD="$HOME/dev/polypoint/zn2c/cloud"
+CLI="$CLOUD/polypoint-cloud-cli"
+
+tmux kill-session -t $SESSION 2>/dev/null
+tmux new-session -d -s $SESSION -n "ppterm" -c "$CLI"
+tmux send-keys -t $SESSION:1 "ppterm" Enter
+tmux split-window -h -t $SESSION:1 -c "$CLI"
+tmux send-keys -t $SESSION:1.2 "ppterm" Enter
+tmux split-window -v -t $SESSION:1 -c "$CLOUD"
+
+tmux new-window -t $SESSION -n "cloud" -c "$CLOUD"
+tmux split-window -h -t $SESSION:2 -c "$HOME/dev/polypoint/on-prem"
+
+tmux new-window -t $SESSION -n "k9s-local"
+tmux send-keys -t $SESSION:3 "kk-local" Enter
+
+tmux new-window -t $SESSION -n "k9s-ct"
+tmux send-keys -t $SESSION:4 "kk-ct" Enter
+
+tmux new-window -t $SESSION -n "k9s-preview"
+tmux send-keys -t $SESSION:5 "kk-preview" Enter
+
+tmux new-window -t $SESSION -n "k9s-prod"
+tmux send-keys -t $SESSION:6 "kk-prod" Enter
+
+tmux select-window -t $SESSION:1
+tmux attach-session -t $SESSION
