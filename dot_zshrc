@@ -15,7 +15,7 @@ source "${ZINIT_HOME}/zinit.zsh"
 zinit wait lucid for \
   atinit"zicompinit; zicdreplay" \
     zdharma-continuum/fast-syntax-highlighting \
-  atload"_zsh_autosuggest_start" \
+  atload"ZSH_AUTOSUGGEST_ACCEPT_WIDGETS+=(desel-forward-char desel-end-of-line); ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS+=(desel-forward-word); _zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions \
   blockf atpull'zinit creinstall -q .' \
     zsh-users/zsh-completions
@@ -26,6 +26,70 @@ zinit snippet OMZP::globalias
 # OMZ lib snippets (l, la, ll, .., ..., md, rd, etc.)
 zinit snippet OMZL::directories.zsh
 zinit snippet OMZL::theme-and-appearance.zsh
+
+# ─── Key Bindings ─────────────────────────────────────────
+bindkey -e                        # Force emacs keybindings (override EDITOR=nvim)
+bindkey "^[[1;3D" backward-word    # Option+Left
+bindkey "^[[1;3C" forward-word     # Option+Right
+
+# ─── Natural Text Selection (Warp-like) ──────────────────
+zle_highlight+=(region:standout)
+
+# Shift-select: start/extend selection while moving
+_sel() { ((REGION_ACTIVE)) || zle set-mark-command; zle $1 }
+for w in backward-{char,word} forward-{char,word} beginning-of-line end-of-line; do
+  eval "sel-$w() { _sel $w }; zle -N sel-$w"
+done
+
+# Plain movement clears selection
+_desel() { REGION_ACTIVE=0; zle $1 }
+for w in backward-{char,word} forward-{char,word} beginning-of-line end-of-line; do
+  eval "desel-$w() { _desel $w }; zle -N desel-$w"
+done
+
+# Shift+Arrow → select characters
+bindkey "^[[1;2D" sel-backward-char         # Shift+Left
+bindkey "^[[1;2C" sel-forward-char          # Shift+Right
+
+# Option+Shift+Arrow → select words
+bindkey "^[[1;4D" sel-backward-word         # Option+Shift+Left
+bindkey "^[[1;4C" sel-forward-word          # Option+Shift+Right
+
+# Cmd+Shift+Arrow → select to line boundary (Ghostty sends custom seq)
+bindkey "^[[1;10D" sel-beginning-of-line    # Cmd+Shift+Left
+bindkey "^[[1;10C" sel-end-of-line          # Cmd+Shift+Right
+
+# Plain Arrow / Option+Arrow → move & deselect
+bindkey "^[[D"    desel-backward-char
+bindkey "^[[C"    desel-forward-char
+bindkey "^[[1;3D" desel-backward-word       # Option+Left
+bindkey "^[[1;3C" desel-forward-word        # Option+Right
+bindkey "^A"      desel-beginning-of-line   # Ctrl-A / Cmd+Left
+bindkey "^E"      desel-end-of-line         # Ctrl-E / Cmd+Right
+
+# Backspace / Delete → remove selection or single char
+del-sel-or-bs() { ((REGION_ACTIVE)) && zle kill-region || zle backward-delete-char }
+del-sel-or-dc() { ((REGION_ACTIVE)) && zle kill-region || zle delete-char }
+zle -N del-sel-or-bs; zle -N del-sel-or-dc
+bindkey "^?"    del-sel-or-bs               # Backspace
+bindkey "^[[3~" del-sel-or-dc               # Delete
+
+# Typing replaces selection
+self-insert() { ((REGION_ACTIVE)) && zle kill-region; zle .self-insert }
+zle -N self-insert
+
+# Cmd+C → copy selection to clipboard or interrupt (Ghostty sends custom seq)
+copy-or-interrupt() {
+  if ((REGION_ACTIVE)); then
+    zle copy-region-as-kill
+    print -rn -- "$CUTBUFFER" | pbcopy
+    REGION_ACTIVE=0
+  else
+    zle send-break
+  fi
+}
+zle -N copy-or-interrupt
+bindkey "^[[CC" copy-or-interrupt
 
 # ─── Completions ──────────────────────────────────────────
 zstyle ':completion:*' menu select
@@ -38,6 +102,9 @@ fpath+=~/.zfunc
 
 # mise (Node, Python — replaces NVM, pyenv, asdf)
 eval "$(mise activate zsh)"
+
+# fzf (fuzzy Ctrl+R history, Ctrl+T file finder)
+source <(fzf --zsh)
 
 # Starship prompt
 eval "$(starship init zsh)"
@@ -73,16 +140,58 @@ alias ap="ansible-playbook --vault-password-file pp_private/ppvault_pw -i invent
 # Kubernetes
 alias kk="k9s"
 alias kk-local="k9s --context docker-desktop -n polypoint"
-alias kk-ct="k9s --context gke_ppcloud-dev_europe-west3_ppcloud-dev-cluster -n ct"
-alias kk-review="k9s --context gke_ppcloud-dev_europe-west6_ppcloud-demo-cluster -n review"
-alias kk-preview="k9s --context gke_ppcloud-dev_europe-west6_ppcloud-demo-cluster -n preview"
-alias kk-staging="k9s --context gke_ppcloud-dev_europe-west6_ppcloud-demo-cluster -n staging"
-alias kk-prod="k9s --context gke_ppcloud-213507_europe-west6_ppcloud-prod-cluster -n prod"
+
+# GKE k9s functions — background-refresh gcloud token every 45min to prevent auth expiry
+# Use `function` keyword to prevent alias expansion of `kk` prefix
+function kk-ct() {
+  while true; do gcloud auth print-access-token > /dev/null 2>&1; sleep 2700; done &
+  local refresh_pid=$!
+  k9s --context gke_ppcloud-dev_europe-west3_ppcloud-dev-cluster -n ct
+  kill $refresh_pid 2>/dev/null
+}
+
+function kk-review() {
+  while true; do gcloud auth print-access-token > /dev/null 2>&1; sleep 2700; done &
+  local refresh_pid=$!
+  k9s --context gke_ppcloud-dev_europe-west6_ppcloud-demo-cluster -n review
+  kill $refresh_pid 2>/dev/null
+}
+
+function kk-preview() {
+  while true; do gcloud auth print-access-token > /dev/null 2>&1; sleep 2700; done &
+  local refresh_pid=$!
+  k9s --context gke_ppcloud-dev_europe-west6_ppcloud-demo-cluster -n preview
+  kill $refresh_pid 2>/dev/null
+}
+
+function kk-staging() {
+  while true; do gcloud auth print-access-token > /dev/null 2>&1; sleep 2700; done &
+  local refresh_pid=$!
+  k9s --context gke_ppcloud-dev_europe-west6_ppcloud-demo-cluster -n staging
+  kill $refresh_pid 2>/dev/null
+}
+
+function kk-prod() {
+  while true; do gcloud auth print-access-token > /dev/null 2>&1; sleep 2700; done &
+  local refresh_pid=$!
+  k9s --context gke_ppcloud-213507_europe-west6_ppcloud-prod-cluster -n prod
+  kill $refresh_pid 2>/dev/null
+}
 
 # Workspace launchers (replace Warp launch configs)
 alias ppdev="~/.local/bin/tmux-ppdev"
 alias ppops="~/.local/bin/tmux-ppops"
+alias c="claude"
 
 # ─── Custom Completions ──────────────────────────────────
 source /Users/yh/.zfunc/_ops-digest
 command -v ng &>/dev/null && source <(ng completion script)
+
+# Added by Antigravity
+export PATH="/Users/yh/.antigravity/antigravity/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/yh/.lmstudio/bin"
+# End of LM Studio CLI section
+
+
