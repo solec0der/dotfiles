@@ -1,0 +1,11 @@
+{{ $password := onepasswordRead "op://Dotfiles/Azure DevOps NPM/credential" -}}
+{{ $username := onepasswordRead "op://Dotfiles/Azure DevOps NPM/username" -}}
+{{ $email := onepasswordRead "op://Dotfiles/Azure DevOps NPM/email" -}}
+//pkgs.dev.azure.com/polypoint/_packaging/polypoint/npm/registry/:username={{ $username }}
+//pkgs.dev.azure.com/polypoint/_packaging/polypoint/npm/registry/:_password={{ $password }}
+//pkgs.dev.azure.com/polypoint/_packaging/polypoint/npm/:username={{ $username }}
+//pkgs.dev.azure.com/polypoint/_packaging/polypoint/npm/:_password={{ $password }}
+//pkgs.dev.azure.com/polypoint/_packaging/polypoint/npm/:email={{ $email }}
+legacy-peer-deps=true
+registry=https://registry.npmjs.org/
+email={{ $email }}
