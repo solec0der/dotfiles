@@ -4,5 +4,4 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_STATE_HOME="$HOME/.local/state"
 export VISUAL=nvim
 export EDITOR="$VISUAL"
-export SDKMAN_DIR="$HOME/.sdkman"
 . "$HOME/.cargo/env"

@@ -97,10 +97,12 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 fpath+=~/.zfunc
 
 # ─── Tool Init ────────────────────────────────────────────
-# SDKMAN (Java, Maven)
-[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+# asdf (Java, Maven, mvnd)
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
+. ~/.asdf/plugins/java/set-java-home.zsh
+asdf_update_java_home
 
-# mise (Node, Python — replaces NVM, pyenv, asdf)
+# mise (Node, Python)
 eval "$(mise activate zsh)"
 
 # fzf (fuzzy Ctrl+R history, Ctrl+T file finder)
