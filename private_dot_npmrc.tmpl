@@ -1,6 +1,6 @@
-{{ $password := onepasswordRead "op://Dotfiles/Azure DevOps NPM/credential" -}}
-{{ $username := onepasswordRead "op://Dotfiles/Azure DevOps NPM/username" -}}
-{{ $email := onepasswordRead "op://Dotfiles/Azure DevOps NPM/email" -}}
+{{ $password := onepasswordRead "op://Dotfiles/Azure DevOps PAT/credential" -}}
+{{ $username := onepasswordRead "op://Dotfiles/Azure DevOps PAT/username" -}}
+{{ $email := onepasswordRead "op://Dotfiles/Azure DevOps PAT/email" -}}
 //pkgs.dev.azure.com/polypoint/_packaging/polypoint/npm/registry/:username={{ $username }}
 //pkgs.dev.azure.com/polypoint/_packaging/polypoint/npm/registry/:_password={{ $password }}
 //pkgs.dev.azure.com/polypoint/_packaging/polypoint/npm/:username={{ $username }}
