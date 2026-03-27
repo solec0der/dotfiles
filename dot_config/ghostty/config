@@ -1,14 +1,26 @@
-font-family = Fira Code
+font-family = FiraCode Nerd Font Mono
 font-size = 14
 font-thicken = true
-theme = catppuccin-mocha
+theme = JetBrains Darcula
 window-padding-x = 8
 window-padding-y = 4
 macos-titlebar-style = tabs
 copy-on-select = clipboard
 mouse-scroll-multiplier = 3
-confirm-close-surface = false
+confirm-close-surface = always
 shell-integration = zsh
+macos-option-as-alt = true
+
+# Cmd+Arrow: jump to start/end of line
+keybind = super+left=text:\x01
+keybind = super+right=text:\x05
+
+# Cmd+Shift+Arrow: select to start/end of line (custom seq handled by zsh)
+keybind = super+shift+left=text:\x1b[1;10D
+keybind = super+shift+right=text:\x1b[1;10C
+
+# Cmd+C: copy ZLE selection or interrupt (mouse copy handled by copy-on-select)
+keybind = super+c=text:\x1b[CC
 
 # Warp-like split keybindings
 keybind = super+d=new_split:right
